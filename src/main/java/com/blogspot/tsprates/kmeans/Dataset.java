@@ -32,7 +32,7 @@ public class Dataset
 
     public double[][] read()
     {
-        double[][] data = new double[getNumCols()][getNumLines()];
+        double[][] data = new double[getNumLines()][getNumCols()];
 
         try
         {
@@ -43,7 +43,7 @@ public class Dataset
 
                 for (int i = 0; i < tokens.length; i++)
                 {
-                    data[i][numLine] = Double.valueOf(tokens[i]);
+                    data[numLine][i] = Double.valueOf(tokens[i]);
                 }
                 numLine++;
             }

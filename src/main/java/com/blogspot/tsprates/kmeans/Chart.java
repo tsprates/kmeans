@@ -14,15 +14,26 @@ public class Chart
 {
 
     private final List<List<Double>> x = new ArrayList<List<Double>>();
+    
     private final List<List<Double>> y = new ArrayList<List<Double>>();
+    
+    private final List<Double> cx = new ArrayList<Double>();
+    
+    private final List<Double> cy = new ArrayList<Double>();
+    
     private final Chart_XY chart;
 
-    public Chart(double[][] data, double[][] center, int[] cluster,
+    /**
+     * Constructor.
+     * 
+     * @param data
+     * @param center
+     * @param dataCluster
+     * @param numCluster 
+     */
+    public Chart(double[][] data, double[][] center, int[] dataCluster,
             int numCluster)
     {
-        double[] xvals = data[0];
-        double[] yvals = data[1];
-
         chart = new ChartBuilder_XY().width(800).height(600).build();
 
         setupStyle();
@@ -33,18 +44,26 @@ public class Chart
             y.add(new ArrayList<Double>());
         }
 
-        for (int i = 0; i < cluster.length; i++)
+        
+        for (int i = 0; i < data.length; i++)
         {
-            x.get(cluster[i]).add(xvals[i]);
-            y.get(cluster[i]).add(yvals[i]);
+            x.get(dataCluster[i]).add(data[i][0]);
+            y.get(dataCluster[i]).add(data[i][1]);
         }
+        
+        for (int i = 0; i < numCluster; i++)
+        {
+            cx.add(center[i][0]);
+            cy.add(center[i][1]);
+        }
+        
 
         for (int i = 0; i < numCluster; i++)
         {
             chart.addSeries("Cluster " + (i + 1), x.get(i), y.get(i));
         }
 
-        chart.addSeries("Centers", center[0], center[1]);
+        chart.addSeries("Centers", cx, cy);
     }
 
     private void setupStyle()

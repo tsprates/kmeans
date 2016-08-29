@@ -30,14 +30,14 @@ public class App
     {
         int epoch = 0;
 
-        double[][] center = new double[numCols][numClusters];
-        double[][] distCenter = new double[numLines][numClusters];
+        double[][] center = new double[numClusters][numCols];
+        double[][] distCenter = new double[numClusters][numLines];
 
         int[] cluster = new int[numLines];
         int[] lastCluster = new int[numLines];
 
         int[] numCluster = new int[numClusters];
-        double[][] sumCluster = new double[numCols][numClusters];
+        double[][] sumCluster = new double[numClusters][numCols];
 
         int[] centerIndex = new int[numClusters];
 
@@ -66,10 +66,7 @@ public class App
         // generate random centers (clusters)
         for (int i = 0; i < numClusters; i++)
         {
-            for (int j = 0; j < numCols; j++)
-            {
-                center[j][i] = dataset[j][centerIndex[i]];
-            }
+            System.arraycopy(dataset[centerIndex[i]], 0, center[i], 0, numCols);
         }
 
         while (epoch < 10000)
@@ -84,9 +81,9 @@ public class App
                     double total = 0.0;
                     for (int k = 0; k < numCols; k++)
                     {
-                        total += Math.pow(dataset[k][i] - center[k][j], 2.0);
+                        total += Math.pow(dataset[i][k] - center[j][k], 2.0);
                     }
-                    distCenter[i][j] = Math.sqrt(total);
+                    distCenter[j][i] = Math.sqrt(total);
                 }
             }
             
@@ -97,7 +94,7 @@ public class App
         	// calculate the closer center
                 for (int j = 1; j < numClusters; j++)
                 {
-                    if (distCenter[i][j] < distCenter[i][smallest])
+                    if (distCenter[j][i] < distCenter[smallest][i])
                     {
                 	smallest = j;
                     }
@@ -112,7 +109,7 @@ public class App
                 numCluster[i] = 0;
                 for (int j = 0; j < numCols; j++)
                 {
-                    sumCluster[j][i] = 0;
+                    sumCluster[i][j] = 0;
                 }
             }
 
@@ -121,9 +118,10 @@ public class App
             {
         	int k = cluster[i];
         	numCluster[k] += 1;
+                
                 for (int j = 0; j < numCols; j++)
                 {
-                    sumCluster[j][k] += dataset[j][i];
+                    sumCluster[k][j] += dataset[i][j];
                 }
             }
             
@@ -131,7 +129,7 @@ public class App
             {
                 for (int j = 0; j < numCols; j++)
                 {
-                    center[j][i] = sumCluster[j][i] / (numCluster[i]);
+                    center[i][j] = sumCluster[i][j] / numCluster[i];
                 }
             }
             
